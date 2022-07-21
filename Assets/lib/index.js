@@ -5,8 +5,10 @@ const Intern = require('./Intern');
 const fs = require('fs');
 const generateHtml = require('../util/generateHtml');
 
+// store all array information 
 const employeeArray = []
 
+// add manager information
 const addManager = () => {
     return inquirer
         .prompt([
@@ -30,7 +32,6 @@ const addManager = () => {
                 message: "Enter the office number",
                 name: "officeNum",
             },
-
         ])
         .then((ans) => {
             const name = ans.name
@@ -39,7 +40,7 @@ const addManager = () => {
             const officeNum = ans.officeNum
             const manager = new Manager(name, id, email, officeNum)
             employeeArray.push(manager)
-            console.log(employeeArray)
+            addMore()
         })
 }
 
@@ -60,20 +61,12 @@ const addMore = () => {
                 addIntern()
             } else {
                 console.log("Generating HTML...")
-                console.log(employeeArray)
-                .then((employeeArray) => {
-                    generateHtml(employeeArray)
-                })
-                .then((response) => {
-                    return writeFile(response)
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
+                writeFile(generateHtml(employeeArray))
             }
         })
 }
 
+// add Engineer information
 const addEngineer = () => {
     return inquirer
         .prompt([
@@ -105,11 +98,11 @@ const addEngineer = () => {
             const github = ans.github
             const engineer = new Engineer(name, id, email, github)
             employeeArray.push(engineer)
-            .then(addMore()) 
-            console.log(employeeArray)
+            addMore() 
         })
 }
 
+// add Intern information
 const addIntern = () => {
     return inquirer
         .prompt([
@@ -141,19 +134,20 @@ const addIntern = () => {
             const school = ans.school
             const intern = new Intern(name, id, email, school)
             employeeArray.push(intern)
-            .then(addMore())
-            console.log(employeeArray)
+            addMore()
         })
 }
 
+// write file function
 const writeFile = (data) => {
     fs.writeFile('./index.html', data, (err) =>
         err ? console.error(err) : console.log('Success!')
     );
 }
 
+// initiate 
 const init = () => {
-    addManager().then(addMore)
+    addManager()
 }
 
 init();
